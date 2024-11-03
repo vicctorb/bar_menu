@@ -9,13 +9,15 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;
+            overflow: hidden; /* Prevent scrolling on the main page */
         }
         iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            touch-action: pan-x pan-y; /* Allow scrolling in both directions */
+            width: 100vw; /* Use viewport width */
+            height: 100vh; /* Use viewport height */
+            border: none; /* Remove border */
+            touch-action: pan-x pan-y; /* Allow touch scrolling */
+            transform: scale(1); /* Prevent overflow */
+            transform-origin: top left; /* Set transform origin */
         }
     </style>
 </head>
