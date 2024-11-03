@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Bar Menu</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -11,17 +12,42 @@
             height: 100%;
             overflow: hidden; /* Prevent scrolling on the main page */
         }
-        iframe {
-            width: 100vw; /* Use viewport width */
-            height: 100vh; /* Use viewport height */
-            border: none; /* Remove border */
-            touch-action: pan-x pan-y; /* Allow touch scrolling */
-            transform: scale(1); /* Prevent overflow */
-            transform-origin: top left; /* Set transform origin */
+        #pdf-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+        }
+        canvas {
+            width: 100%; /* Make canvas responsive */
         }
     </style>
 </head>
 <body>
-    <iframe src="./assets/menu.pdf" title="View Menu"></iframe>
+    <div id="pdf-container"></div>
+    <script>
+        const url = './assets/menu.pdf';
+        const pdfContainer = document.getElementById('pdf-container');
+
+        // Load the PDF
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            // Fetch the first page
+            pdf.getPage(1).then(page => {
+                const viewport = page.getViewport({ scale: 1 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Render the PDF page into the canvas context
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext).promise.then(() => {
+                    pdfContainer.appendChild(canvas);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
